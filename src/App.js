@@ -1,216 +1,16 @@
-// import React, {useState} from "react";
-// import {Search, FileText, Loader2, AlertCircle, CheckCircle} from "lucide-react";
-// import "./App.css";
-// import axios from "axios";
-
-// function App() {
-//   const [query, setQuery] = useState("");
-//   const [loading, setLoading] = useState(false);
-//   const [response, setResponse] = useState(null);
-//   const [error, setError] = useState(null);
-
-//   const API_URL = "http://localhost:8000";
-
-//   const exampleQueries = ["What are the main telecommunications laws?", "सञ्चार सम्बन्धी मुख्य कानूनहरू के हुन्?", "Explain media regulations in Nepal", "What are property rights provisions?"];
-
-//   const handleSearch = async (e) => {
-//     e.preventDefault();
-
-//     if (!query.trim()) return;
-
-//     setLoading(true);
-//     setError(null);
-//     setResponse(null);
-
-//     try {
-//       const res = await axios.post(`${API_URL}/query`, {
-//         query: query,
-//         n_results: 5,
-//       });
-
-//       setResponse(res.data);
-//     } catch (err) {
-//       setError(err.response?.data?.detail || "Search failed. Please try again.");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <div className="App">
-//       <div className="container">
-//         {/* Header */}
-//         <header className="header">
-//           <div className="header-icon">
-//             <FileText size={48} />
-//           </div>
-//           <h1>Nepali Legal RAG System</h1>
-//           <p>AI-powered legal document search for Nepal</p>
-//         </header>
-
-//         {/* Search Box */}
-//         <div className="search-box">
-//           <form onSubmit={handleSearch}>
-//             <div className="search-input-wrapper">
-//               <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Ask a legal question... (English or नेपाली)" className="search-input" disabled={loading} />
-//               <button type="submit" className="search-button" disabled={loading || !query.trim()}>
-//                 {loading ? (
-//                   <>
-//                     <Loader2 className="spin" size={20} />
-//                     Searching...
-//                   </>
-//                 ) : (
-//                   <>
-//                     <Search size={20} />
-//                     Search
-//                   </>
-//                 )}
-//               </button>
-//             </div>
-//           </form>
-
-//           {/* Example Queries */}
-//           <div className="examples">
-//             <p className="examples-label">Try these examples:</p>
-//             <div className="example-buttons">
-//               {exampleQueries.map((example, idx) => (
-//                 <button key={idx} onClick={() => setQuery(example)} className="example-button">
-//                   {example}
-//                 </button>
-//               ))}
-//             </div>
-//           </div>
-//         </div>
-
-//         {/* Error Display */}
-//         {error && (
-//           <div className="error-box">
-//             <AlertCircle size={24} />
-//             <div>
-//               <h3>Error</h3>
-//               <p>{error}</p>
-//             </div>
-//           </div>
-//         )}
-
-//         {/* Results Display */}
-//         {response && (
-//           <div className="results">
-//             {/* Answer Section */}
-//             <div className="answer-box">
-//               <div className="answer-header">
-//                 <CheckCircle size={24} color="#10b981" />
-//                 <h2>Answer</h2>
-//               </div>
-//               <div className="answer-text">{response.answer}</div>
-//             </div>
-
-//             {/* Sources Section */}
-//             {/* <div className="sources-box">
-//               <div className="sources-header">
-//                 <FileText size={24} color="#6366f1" />
-//                 <h3>Sources ({response.sources.length})</h3>
-//               </div>
-//               <div className="sources-list">
-//                 {response.sources.map((source, idx) => (
-//                   <div key={idx} className="source-item">
-//                     <div className="source-content">
-//                       <div className="source-badge">
-//                         Source {idx + 1}
-//                       </div>
-//                       <div className="source-details">
-//                         <div className="source-filename">
-//                           {source.filename}
-//                         </div>
-//                         <div className="source-meta">
-//                           <span>Volume: {source.volume}</span>
-//                           <span>•</span>
-//                           <span>Relevance: {(source.relevance * 100).toFixed(0)}%</span>
-//                         </div>
-//                       </div>
-//                     </div>
-//                     <div className="relevance-bar">
-//                       <div 
-//                         className="relevance-fill"
-//                         style={{ width: `${source.relevance * 100}%` }}
-//                       />
-//                     </div>
-//                   </div>
-//                 ))}
-//               </div>
-//             </div> */}
-
-//             {/* Sources Section - UPDATED */}
-//             <div className="sources-box">
-//               <div className="sources-header">
-//                 <FileText size={24} color="#6366f1" />
-//                 <h3>Sources & Citations ({response.sources.length})</h3>
-//               </div>
-//               <div className="sources-list">
-//                 {response.sources.map((source, idx) => (
-//                   <div key={idx} className="source-item">
-//                     <div className="source-content">
-//                       <div className="source-badge">Source {idx + 1}</div>
-//                       <div className="source-details">
-//                         <div className="source-filename">{source.filename}</div>
-
-//                         {/* Display section info */}
-//                         {source.section_type && source.section_number && (
-//                           <div className="source-section">
-//                             📑 {source.section_type.replace("_nepali", "").charAt(0).toUpperCase() + source.section_type.replace("_nepali", "").slice(1)} {source.section_number}
-//                           </div>
-//                         )}
-
-//                         {/* Display page numbers */}
-//                         {source.page_numbers && source.page_numbers.length > 0 && (
-//                           <div className="source-pages">
-//                             📄 Page{source.page_numbers.length > 1 ? "s" : ""}: {source.page_numbers.join(", ")}
-//                           </div>
-//                         )}
-
-//                         {/* Display full citation */}
-//                         {source.citation && <div className="source-citation">📖 {source.citation}</div>}
-
-//                         <div className="source-meta">
-//                           <span>Volume: {source.volume}</span>
-//                           <span>•</span>
-//                           <span>Relevance: {(source.relevance * 100).toFixed(0)}%</span>
-//                         </div>
-//                       </div>
-//                     </div>
-//                     <div className="relevance-bar">
-//                       <div className="relevance-fill" style={{width: `${source.relevance * 100}%`}} />
-//                     </div>
-//                   </div>
-//                 ))}
-//               </div>
-//             </div>
-//           </div>
-//         )}
-
-//         {/* Footer */}
-//         <footer className="footer">
-//           <p>Powered by OpenAI GPT-4 & ChromaDB</p>
-//           <p>Legal documents from Nepal Law Commission</p>
-//         </footer>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default App;
-
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, User, MessageSquare, ExternalLink } from 'lucide-react';
 import './App.css';
 import axios from 'axios';
+import logo from './assets/logo.png';
+import backgroundGradient from './assets/background-gradient.png';
+import botAvatar from './assets/bot-avatar.png';
 
 function App() {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
-  const [userName] = useState('Suyash'); // You can make this dynamic
+  const [userName] = useState('User'); // You can make this dynamic
   const messagesEndRef = useRef(null);
 
   const API_URL = 'http://localhost:8000';
@@ -229,38 +29,46 @@ function App() {
     scrollToBottom();
   }, [messages]);
 
+  // Handle Enter key press
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
   const handleSend = async (queryText = null) => {
     const query = queryText || inputValue.trim();
-    
     if (!query) return;
-    
+
     // Add user message
     const userMessage = {
       type: 'user',
       content: query,
       timestamp: new Date()
     };
-    
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
     setLoading(true);
-    
+
     try {
       const response = await axios.post(`${API_URL}/query`, {
         query: query,
         n_results: 5
       });
-      
+
+      console.log("Bot response:", response.data); // debug log
+
       // Add bot response
       const botMessage = {
         type: 'bot',
-        content: response.data.answer,
-        sources: response.data.sources,
+        content: response.data.answer || "क्षमा गर्नुहोस्, उत्तर उपलब्ध छैन।",
+        sources: response.data.sources || [],
         timestamp: new Date()
       };
-      
+
       setMessages(prev => [...prev, botMessage]);
-      
+
     } catch (error) {
       const errorMessage = {
         type: 'bot',
@@ -274,13 +82,6 @@ function App() {
     }
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
-
   const clearChat = () => {
     setMessages([]);
   };
@@ -291,17 +92,19 @@ function App() {
       <header className="app-header">
         <div className="header-left">
           <div className="logo">
-            <MessageSquare size={24} />
-            <span className="logo-text">VIDHIBOT</span>
+            <img src={logo} alt="VIDHIBOT Logo" className="logo-image" />
           </div>
         </div>
         <div className="header-right">
           <button className="clear-chat-btn" onClick={clearChat}>
             Clear Chat
           </button>
+          <div className="divider"></div>
           <div className="user-profile">
-            <User size={18} />
-            <span>{userName}</span>
+            <div className="user-avatar">
+              <User size={18} />
+            </div>
+            <span className="user-name">{userName}</span>
           </div>
         </div>
       </header>
@@ -309,7 +112,7 @@ function App() {
       {/* Main Content */}
       <div className="main-content">
         <div className="chat-container">
-          
+
           {/* Welcome Screen */}
           {messages.length === 0 && (
             <div className="welcome-screen">
@@ -317,17 +120,16 @@ function App() {
               <p className="welcome-subtitle">
                 AI-powered search across thousands of Nepali legal documents. Get instant answers with verified sources.
               </p>
-              
               <div className="search-box-large">
                 <input
                   type="text"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  onKeyPress={handleKeyPress}
+                  onKeyDown={handleKeyDown}
                   placeholder="नेपालका कानूनी दस्तावेजहरू खोज्नुहोस् |"
                   className="search-input-large"
                 />
-                <button 
+                <button
                   className="send-button-large"
                   onClick={() => handleSend()}
                   disabled={!inputValue.trim()}
@@ -359,7 +161,7 @@ function App() {
                     {message.type === 'user' ? (
                       <User size={20} />
                     ) : (
-                      <MessageSquare size={20} />
+                      <img src={botAvatar} alt="Bot Avatar" className="avatar-image" />
                     )}
                   </div>
                   <div className="message-content">
@@ -370,8 +172,8 @@ function App() {
                         <div className="bot-response">
                           <p className="message-text">{message.content}</p>
                         </div>
-                        
-                        {message.sources && message.sources.length > 0 && (
+
+                        {message.sources && message.sources.length > 0 ? (
                           <div className="sources-section">
                             <p className="sources-label">स्रोतहरू:</p>
                             <div className="sources-list">
@@ -387,13 +189,11 @@ function App() {
                                   </div>
                                   <div className="source-details">
                                     <p className="source-filename">{source.filename}</p>
-                                    
                                     {source.section_type && source.section_number && (
                                       <p className="source-section">
                                         📑 {source.section_type.charAt(0).toUpperCase() + source.section_type.slice(1)} {source.section_number}
                                       </p>
                                     )}
-                                    
                                     {source.page_numbers && source.page_numbers.length > 0 && (
                                       <p className="source-pages">
                                         📄 Pages: {source.page_numbers.join(', ')}
@@ -404,13 +204,15 @@ function App() {
                               ))}
                             </div>
                           </div>
+                        ) : (
+                          <p className="no-sources-text">No sources available</p>
                         )}
                       </>
                     )}
                   </div>
                 </div>
               ))}
-              
+
               {loading && (
                 <div className="message bot">
                   <div className="message-avatar">
@@ -425,7 +227,7 @@ function App() {
                   </div>
                 </div>
               )}
-              
+
               <div ref={messagesEndRef} />
             </div>
           )}
@@ -439,7 +241,7 @@ function App() {
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                onKeyPress={handleKeyPress}
+                onKeyDown={handleKeyDown}
                 placeholder="Type your legal question here......"
                 className="chat-input"
                 disabled={loading}
