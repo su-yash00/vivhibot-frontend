@@ -238,7 +238,7 @@ function MessageComponent({message}) {
         </div>
         <div style={styles.messageContent}>
           <div style={styles.outOfContextBox}>
-            <p style={styles.outOfContextText}>⚠️ {message.content}</p>
+            <p style={styles.outOfContextText}> {message.content}</p>
             <p style={styles.outOfContextHint}>Please ask questions related to Nepali legal documents, laws, acts, regulations, or legal procedures.</p>
           </div>
         </div>
@@ -294,7 +294,6 @@ function MessageComponent({message}) {
         <div style={styles.botResponse}>
           <p style={styles.messageText}>{message.content}</p>
         </div>
-        xx
         {message.sources && message.sources.length > 0 && (
           <div style={styles.sourcesSection}>
             <div style={styles.sourcesHeader}>
@@ -324,11 +323,11 @@ function SourceCard({source}) {
         <span style={styles.sourceNumber}>Source {source.index}</span>
         <div style={styles.sourceHeaderRight}>
           <span style={styles.relevanceScore}>{(source.relevance * 100).toFixed(0)}% match</span>
-          {source.citation && (
+          {/* {source.citation && (
             <button style={styles.viewSourceBtn}>
               <ExternalLink size={14} />
             </button>
-          )}
+          )} */}
         </div>
       </div>
 
@@ -339,7 +338,7 @@ function SourceCard({source}) {
 
         {source.section_type && source.section_number && (
           <div style={styles.sourceMetaItem}>
-            <span style={styles.metaIcon}>📑</span>
+            {/* <span style={styles.metaIcon}>📑</span> */}
             <span style={styles.metaText}>
               {source.section_type.charAt(0).toUpperCase() + source.section_type.slice(1).replace("_", " ")} {source.section_number}
             </span>
@@ -348,7 +347,7 @@ function SourceCard({source}) {
 
         {source.page_numbers && source.page_numbers.length > 0 && (
           <div style={styles.sourceMetaItem}>
-            <span style={styles.metaIcon}>📄</span>
+            {/* <span style={styles.metaIcon}>📄</span> */}
             <span style={styles.metaText}>
               Page{source.page_numbers.length > 1 ? "s" : ""}: {source.page_numbers.join(", ")}
             </span>
@@ -357,7 +356,7 @@ function SourceCard({source}) {
 
         {source.volume && source.volume !== "Unknown" && (
           <div style={styles.sourceMetaItem}>
-            <span style={styles.metaIcon}>📚</span>
+            {/* <span style={styles.metaIcon}>📚</span> */}
             <span style={styles.metaText}>{source.volume}</span>
           </div>
         )}
